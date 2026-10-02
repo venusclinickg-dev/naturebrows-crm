@@ -4,7 +4,7 @@ import { danhSachKhach, layTrang } from "@/lib/facebook-server";
 import FbClient from "./FbClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Tin nhắn Facebook | Tiệm CRM" };
+export const metadata = { title: "Tin nhắn Facebook | Nature Brows CRM" };
 
 export default async function Page() {
   const user = await getCurrentUser();

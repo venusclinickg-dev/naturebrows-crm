@@ -6,7 +6,7 @@ import { vnDateStr } from "@/lib/chung";
 import DaoTaoClient from "./DaoTaoClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Đào tạo | Tiệm CRM" };
+export const metadata = { title: "Đào tạo | Nature Brows CRM" };
 
 export default async function Page({ searchParams }: { searchParams?: { lop?: string } }) {
   const user = await getCurrentUser();

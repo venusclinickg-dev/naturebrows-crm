@@ -5,7 +5,7 @@ import { layTrang } from "@/lib/facebook-server";
 import KetNoiClient from "./KetNoiClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Nối Facebook | Tiệm CRM" };
+export const metadata = { title: "Nối Facebook | Nature Brows CRM" };
 
 export default async function Page() {
   const user = await getCurrentUser();

@@ -5,7 +5,7 @@ import { layTho, layDichVu, layCaiDat } from "@/lib/lich-server";
 import CaiDatClient from "./CaiDatClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Dịch vụ & thợ | Tiệm CRM" };
+export const metadata = { title: "Dịch vụ & thợ | Nature Brows CRM" };
 
 export default async function Page() {
   const user = await getCurrentUser();

@@ -6,7 +6,7 @@ import { vnDateStr, congNgay } from "@/lib/chung";
 import LichClient from "./LichClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Lịch hẹn | Tiệm CRM" };
+export const metadata = { title: "Lịch hẹn | Nature Brows CRM" };
 
 export default async function Page({ searchParams }: { searchParams?: { ngay?: string } }) {
   const user = await getCurrentUser();

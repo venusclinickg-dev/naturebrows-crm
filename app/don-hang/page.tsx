@@ -6,7 +6,7 @@ import { vnDateStr } from "@/lib/chung";
 import DonHangClient from "./DonHangClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Đơn hàng | Tiệm CRM" };
+export const metadata = { title: "Đơn hàng | Nature Brows CRM" };
 
 export default async function Page({ searchParams }: { searchParams?: { thang?: string } }) {
   const user = await getCurrentUser();

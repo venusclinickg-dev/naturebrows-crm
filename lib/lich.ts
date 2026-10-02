@@ -43,7 +43,7 @@ export type CaiDatLich = {
 
 export const CAI_DAT_MAC_DINH: CaiDatLich = {
   gioMo: 9 * 60, gioDong: 20 * 60, buoc: 15,
-  tenTiem: "Tiệm của bạn", choDatWeb: true, toiDaNgay: 30,
+  tenTiem: "Nature Brows", choDatWeb: true, toiDaNgay: 30,
 };
 
 /** 570 -> "09:30" */

@@ -55,7 +55,7 @@ export default function Nav({
           <MessageSquare className="h-5 w-5" />
         </span>
         <span className="leading-tight">
-          <span className="block text-base font-bold tracking-tight text-[#0068FF]">Tiệm CRM</span>
+          <span className="block text-base font-bold tracking-tight text-[#0068FF]">Nature Brows CRM</span>
           <span className="block text-[9px] font-semibold uppercase tracking-[0.18em] text-slate-400">lịch · khách · zalo</span>
         </span>
       </Link>

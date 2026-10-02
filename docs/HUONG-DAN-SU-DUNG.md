@@ -1,4 +1,4 @@
-# Hướng dẫn sử dụng Tiệm CRM
+# Hướng dẫn sử dụng Nature Brows CRM
 
 Tài liệu này đi theo **từng màn hình**, theo đúng thứ tự trên thanh menu bên trái.
 Phần cài đặt (dựng Supabase, deploy web, cắm cầu nối Zalo) nằm ở [README](../README.md) — ở đây

@@ -90,7 +90,7 @@ INSERT INTO config (key, value, description) VALUES
   ('lich_gio_mo',  '09:00', 'Giờ mở cửa (HH:MM)'),
   ('lich_gio_dong','20:00', 'Giờ đóng cửa (HH:MM)'),
   ('lich_buoc',    '15',    'Bước chia khung giờ, tính bằng phút'),
-  ('lich_ten_tiem','Tiệm của bạn', 'Tên hiện trên trang khách tự đặt lịch'),
+  ('lich_ten_tiem','Nature Brows', 'Tên hiện trên trang khách tự đặt lịch'),
   ('lich_cho_dat_web','1',  'Cho khách tự đặt qua web? 1 = bật, 0 = tắt'),
   ('lich_toi_da_ngay','30', 'Khách tự đặt được trước tối đa bao nhiêu ngày')
 ON CONFLICT (key) DO NOTHING;

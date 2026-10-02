@@ -1,6 +1,6 @@
-# Tiệm CRM
+# Nature Brows CRM
 
-**Hệ quản lý khách cho tiệm dịch vụ** (nail, mi, spa, tóc…): chăm khách qua Zalo, hồ sơ khách, lịch hẹn, đơn hàng — chạy trên Next.js + Supabase, nối Zalo qua thư viện [zca-js](https://github.com/RFS-ADRENO/zca-js) (MIT).
+**Hệ quản trị nội bộ Nature Brows** (phun xăm – thẩm mỹ – đào tạo): chăm khách qua Zalo, hồ sơ khách, lịch hẹn, đơn hàng — chạy trên Next.js + Supabase, nối Zalo qua thư viện [zca-js](https://github.com/RFS-ADRENO/zca-js) (MIT).
 
 Nền của bản này là CRM Zalo do [HOPE Corp](https://ikihealing.com) dựng và chạy thật cho đội sale chăm hơn 8.000 hội thoại Zalo.
 
@@ -146,8 +146,8 @@ Dán nhầm hai lần không sao, các file chạy lại được và không nh�
 ### 2. Web
 
 ```bash
-git clone https://github.com/hopecorp-cpu/tiem-crm.git
-cd tiem-crm
+git clone https://github.com/venusclinickg-dev/naturebrows-crm.git
+cd naturebrows-crm
 cp .env.example .env.local   # điền 3 giá trị từ Supabase → Project Settings → API
 npm install
 npm run dev                  # http://localhost:3000
@@ -261,4 +261,4 @@ Phần mềm giao nguyên trạng, **không bảo hành**.
 
 ## English summary
 
-**Tiệm CRM** is a team inbox / CRM for Vietnamese businesses that sell and support customers over personal Zalo accounts (Zalo has no official API for personal accounts). Stack: Next.js + Supabase + [zca-js](https://github.com/RFS-ADRENO/zca-js). A bridge script on an always-on machine listens for messages and sends queued replies; the web app provides a three-pane team inbox with per-agent permissions, deterministic lead scoring, order-based customer badges, labels, message templates, and a configurable banned-words gate for regulated industries. It also includes an **appointment book** (per-staff day grid, variable service durations, public self-booking page, double-booking prevented by a Postgres `EXCLUDE` constraint rather than application code), a **Facebook Page inbox** (signed webhooks, 24-hour messaging-window countdown, page tokens never leave the server), an **order book** (manual entry and editing, Vietnamese shorthand money input such as `500k` / `1tr2`, monthly totals; orders created by the appointment book land in the same table so customer badges stay correct), and an **auto-reply bot** for both channels that is off by default and designed around knowing when to stay silent — it hands off to a human on complaint, refund, legal, or medical keywords, caps consecutive automated replies, and says nothing rather than guessing. **Warning:** zca-js is an unofficial API — accounts may be banned; use at your own risk. Licensed under the MIT License by HOPE Corp. Provided as is, without warranty.
+**Nature Brows CRM** is a team inbox / CRM for Vietnamese businesses that sell and support customers over personal Zalo accounts (Zalo has no official API for personal accounts). Stack: Next.js + Supabase + [zca-js](https://github.com/RFS-ADRENO/zca-js). A bridge script on an always-on machine listens for messages and sends queued replies; the web app provides a three-pane team inbox with per-agent permissions, deterministic lead scoring, order-based customer badges, labels, message templates, and a configurable banned-words gate for regulated industries. It also includes an **appointment book** (per-staff day grid, variable service durations, public self-booking page, double-booking prevented by a Postgres `EXCLUDE` constraint rather than application code), a **Facebook Page inbox** (signed webhooks, 24-hour messaging-window countdown, page tokens never leave the server), an **order book** (manual entry and editing, Vietnamese shorthand money input such as `500k` / `1tr2`, monthly totals; orders created by the appointment book land in the same table so customer badges stay correct), and an **auto-reply bot** for both channels that is off by default and designed around knowing when to stay silent — it hands off to a human on complaint, refund, legal, or medical keywords, caps consecutive automated replies, and says nothing rather than guessing. **Warning:** zca-js is an unofficial API — accounts may be banned; use at your own risk. Licensed under the MIT License by HOPE Corp. Provided as is, without warranty.
