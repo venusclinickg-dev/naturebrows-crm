@@ -14,6 +14,7 @@ Nền của bản này là CRM Zalo do [HOPE Corp](https://ikihealing.com) dựn
 | **Tin nhắn Facebook / fanpage**: hộp thư, trả lời từ web, đồng hồ cửa sổ 24 giờ | **Chạy được** |
 | **Bot trả lời tự động** cả Zalo lẫn Facebook, biết khi nào phải im | **Chạy được** |
 | **Đơn hàng**: ghi tay, sửa, tìm, tổng kết tháng; lịch xong tự sinh đơn | **Chạy được** |
+| **Đào tạo**: khoá · lớp · học viên · học phí nhiều đợt · điểm danh | **Chạy được** |
 
 **Dùng hằng ngày thì bấm vào đâu: [Hướng dẫn sử dụng từng màn hình](docs/HUONG-DAN-SU-DUNG.md).**
 
@@ -108,6 +109,7 @@ app/lich/        lib/lich.ts          supabase/004_lich.sql
 app/facebook/    lib/facebook*.ts     supabase/003_facebook.sql
 app/bot/         lib/bot.ts           (dùng chung bảng của 003)
 app/don-hang/    lib/don-hang.ts      supabase/005_don_hang.sql
+app/dao-tao/     lib/dao-tao.ts       supabase/006_dao_tao.sql
                  lib/auth.ts        ─┐
                  lib/supabase-*.ts   │  supabase/001_khoi_tao.sql  <- LÕI
                  lib/khach.ts       ─┘  (khách · người dùng · config)
@@ -137,6 +139,7 @@ Chạy tiếp, mỗi file một lượt Run:
 | [`supabase/003_facebook.sql`](supabase/003_facebook.sql) | dùng hộp thư Facebook và/hoặc bot trả lời |
 | [`supabase/004_lich.sql`](supabase/004_lich.sql) | dùng lịch hẹn (cần extension `btree_gist` — Supabase cho sẵn) |
 | [`supabase/005_don_hang.sql`](supabase/005_don_hang.sql) | dùng màn đơn hàng (chỉ thêm cột vào bảng đã có, không dựng bảng mới) |
+| [`supabase/006_dao_tao.sql`](supabase/006_dao_tao.sql) | dùng màn đào tạo (khoá học, lớp, học viên, học phí, điểm danh) |
 
 Dán nhầm hai lần không sao, các file chạy lại được và không nhân đôi dữ liệu.
 

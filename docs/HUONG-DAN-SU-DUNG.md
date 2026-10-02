@@ -228,3 +228,41 @@ tính khác** — Zalo chỉ cho một phiên máy tính mỗi nick. Quét QR l�
   này cố ý được phân biệt ở mọi màn hình.
 - **Dùng nick Zalo phụ / hotline của tiệm**, đừng dùng nick cá nhân quan trọng — xem mục RỦI RO
   trong [README](../README.md#rủi-ro--đọc-trước-khi-dùng).
+
+---
+
+## Màn Đào tạo (`/dao-tao`)
+
+Dành cho phần dạy nghề: khoá học, lớp, học viên, học phí và điểm danh.
+
+### Mở một lớp mới
+1. Bấm **+ Khoá học** một lần cho mỗi khoá bạn dạy (Phun mày cơ bản, Phun môi nâng cao…) — điền học phí niêm yết. Khoá là danh mục, khai một lần dùng mãi.
+2. Bấm **Mở lớp**: đặt tên lớp (K12 phun mày…), chọn khoá, ngày khai giảng, giảng viên, địa điểm, sĩ số tối đa.
+
+### Thêm học viên
+Chọn lớp ở cột trái → **Thêm học viên**. Gõ họ tên, số điện thoại, học phí chốt riêng với người đó (ô học phí tự điền sẵn giá niêm yết của khoá, sửa được), giảm giá nếu có.
+
+- Gõ tiền kiểu người Việt: `15tr`, `15tr5`, `500k`, `15.000.000` đều hiểu. Ô nhập **in lại số đã hiểu** ngay bên dưới (`= 15.500.000đ`) — thấy sai là sửa ngay.
+- Gõ lại số điện thoại của người đã có trong hệ thống thì **không tạo hồ sơ thứ hai**, hệ thống nối vào đúng người cũ.
+- Thêm trùng một người vào cùng một lớp thì bị chặn, báo "Học viên này đã có trong lớp".
+
+### Thu học phí
+Bấm **Thu tiền** ở dòng học viên. Mỗi lần thu là một dòng riêng (ngày, hình thức, người thu) — học phí ngành này gần như luôn đóng nhiều đợt, giữ từng lần thu thì còn đối soát được.
+
+Cột **Còn lại** hiện:
+- đỏ **Chưa đóng** — chưa thu đồng nào;
+- vàng số tiền — còn thiếu;
+- xanh **Đủ** — xong;
+- xanh dương — thu dư, nhớ trả lại.
+
+### Điểm danh
+1. **Thêm buổi** cho lớp (ngày, giờ, chủ đề). Mỗi buổi thành một cột trong bảng.
+2. Bấm vào ô giao giữa học viên và buổi để đổi: chưa điểm danh → có mặt → vắng.
+
+Ô **Tỷ lệ đi học** chỉ hiện số khi đã điểm danh ít nhất một lượt; chưa có thì ghi *"chưa đo được"* chứ không hiện 0%.
+
+### Những con số trên đầu màn
+- **Sĩ số lớp này** — không đếm người đã chuyển trạng thái *Nghỉ*.
+- **Đã thu của lớp** — gồm cả tiền của người đã nghỉ (tiền vào két là có thật).
+- **Còn thiếu** — chỉ tính người còn đang học, để không dựng ra khoản nợ ma không ai đòi được.
+- **Học phí thu trong tháng** — tổng của tất cả các lớp, tính theo ngày thu.

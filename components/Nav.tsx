@@ -5,7 +5,7 @@ import { useState } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import {
   LayoutDashboard, MessageSquare, Users, UsersRound, Search, Smartphone, X, QrCode, FileText, LogOut,
-  CalendarDays, Settings, Facebook, Bot, Receipt,
+  CalendarDays, Settings, Facebook, Bot, Receipt, GraduationCap,
 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase-browser";
 
@@ -20,6 +20,7 @@ const MENU = [
   { href: "/zalo", label: "Tổng quan", icon: LayoutDashboard, chinhXac: true },
   { href: "/lich", label: "Lịch hẹn", icon: CalendarDays, chinhXac: true },
   { href: "/don-hang", label: "Đơn hàng", icon: Receipt, chinhXac: true },
+  { href: "/dao-tao", label: "Đào tạo", icon: GraduationCap },
   { href: "/zalo/khach-hang", label: "Khách hàng", icon: Users },
   { href: "/zalo/tin-nhan", label: "Tin nhắn Zalo", icon: MessageSquare, badgeKey: "tinNhan" as const },
   { href: "/facebook", label: "Tin nhắn Facebook", icon: Facebook, chinhXac: true },
