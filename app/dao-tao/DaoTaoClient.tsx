@@ -40,6 +40,8 @@ export default function DaoTaoClient({
   const [mo, setMo] = useState<null | "lop" | "khoa" | "hoc-vien" | "buoi" | { thu: GhiDanh } | { sua: GhiDanh }>(null);
   const [loiGhi, setLoiGhi] = useState("");
   const [chay, setChay] = useState(false);
+  // Dòng xác nhận SAU KHI đã ghi xong. Xem ghi chú trong `gui()`.
+  const [daGhi, setDaGhi] = useState("");
 
   const tk = useMemo(() => tongKetLop(hocVien), [hocVien]);
   const tyLe = tyLeDiHoc(coMat, tongLuot);
@@ -52,6 +54,14 @@ export default function DaoTaoClient({
       });
       const j = await r.json();
       if (!r.ok || !j.ok) { setLoiGhi(j?.loi || "Không lưu được"); return false; }
+      // Tiền thì KHÔNG để bảng tự nói hộ. router.refresh() có lúc về chậm một nhịp,
+      // người thu nhìn ô "đã thu" vẫn 0đ rồi thu lại lần nữa — sổ sách sai gấp đôi.
+      // Nên in thẳng con số máy chủ vừa ghi được, đứng đó tới khi người dùng tự tắt.
+      setDaGhi(
+        body.viec === "thu-hoc-phi" && typeof j.daThu === "number"
+          ? `Đã ghi ${tienDep(j.vuaThu)} — học viên này đã đóng tổng ${tienDep(j.daThu)}.`
+          : ""
+      );
       setMo(null); router.refresh(); return true;
     } catch { setLoiGhi("Mất mạng, thử lại giúp em"); return false; }
     finally { setChay(false); }
@@ -61,6 +71,15 @@ export default function DaoTaoClient({
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-4 p-4 lg:p-6">
+      {daGhi && (
+        <div className="flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+          <span className="flex-1">{daGhi}</span>
+          <button onClick={() => setDaGhi("")} className="shrink-0 rounded p-0.5 hover:bg-emerald-100" aria-label="Tắt thông báo">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="flex items-center gap-2 text-xl font-bold text-slate-900">
           <GraduationCap className="h-5 w-5 text-[#0068FF]" /> Đào tạo

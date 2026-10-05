@@ -7,7 +7,7 @@ import {
   type TrangThaiHV, type TrangThaiLop,
 } from "@/lib/dao-tao";
 
-export type KetQua = { ok: true; id: string } | { ok: false; loi: string };
+export type KetQua = { ok: true; id: string; daThu?: number; vuaThu?: number } | { ok: false; loi: string };
 
 /* ============================================================== KHOÁ HỌC */
 
@@ -270,7 +270,14 @@ export async function thuHocPhi(v: { ghiDanhId: string; soTien: unknown; ngay?: 
     hinh_thuc: v.hinhThuc || null, nguoi_thu: v.nguoiThu || null, ghi_chu: v.ghiChu || null,
   }).select("id").single();
   if (error) return { ok: false, loi: error.message };
-  return { ok: true, id: data.id };
+
+  // Trả về TỔNG ĐÃ ĐÓNG ngay tại đây, không để màn hình tự đoán.
+  // Màn hình làm mới bằng router.refresh() có lúc về chậm; người thu tiền nhìn thấy
+  // ô "đã thu" vẫn 0đ thì tưởng chưa lưu và THU LẠI LẦN NỮA — sổ sách sai gấp đôi,
+  // còn học viên thì bị đòi tiền đã đóng. Nên con số thật phải đi kèm ngay câu trả lời.
+  const { data: ds } = await sb.from("thu_hoc_phi").select("so_tien").eq("ghi_danh_id", v.ghiDanhId);
+  const daThu = (ds || []).reduce((t, r: any) => t + Math.round(Number(r.so_tien) || 0), 0);
+  return { ok: true, id: data.id, vuaThu: n, daThu };
 }
 
 export async function xoaLanThu(id: string): Promise<KetQua> {
