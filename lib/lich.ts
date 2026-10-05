@@ -133,3 +133,63 @@ export function tinNhacLich(h: {
   dong.push(``, `Nếu bận mình nhắn lại giúp em để em xếp lại giờ nhé. Hẹn gặp ạ!`);
   return dong.join("\n");
 }
+
+/* --------------------------------------------------------------- GIÁ TIỀN */
+
+/**
+ * Đọc giá dịch vụ gõ tay: "6tr", "6 triệu", "1tr2", "500k", "6.000.000" đều hiểu.
+ *
+ * Vì sao mảng lịch cần bản riêng mà không nhập từ `don-hang` hay `dao-tao`:
+ * một mảng KHÔNG đọc ruột mảng khác (luật thư mục của kho này). Ba bản giống
+ * nhau là cố ý — đổi cách hiểu tiền ở mảng này không được âm thầm đổi sổ đơn hàng.
+ *
+ * LUẬT CỐ Ý: số TRẦN là số tiền ĐÚNG như gõ — "350" = 350 đồng, không đoán hộ
+ * thành 350.000. Không đọc nổi thì trả `null` để nơi gọi BÁO LỖI, tuyệt đối
+ * không quy về 0: trước đây ô giá dùng `Number("6tr")` ra NaN rồi im lặng trượt,
+ * chủ tiệm bấm Thêm mà dịch vụ không vào đâu cả.
+ */
+export function docGia(v: unknown): number | null {
+  if (typeof v === "number") return Number.isFinite(v) && v >= 0 ? Math.round(v) : null;
+  let s = String(v ?? "").toLowerCase().trim();
+  if (!s) return null;
+  s = s.replace(/\s|đ|vnd|₫/g, "");
+  if (!s) return null;
+
+  // Cụm DÀI trước cụm NGẮN, nếu không "tr" nuốt mất "trieu".
+  const NHAN: [RegExp, number][] = [
+    [/^(.*?)(?:triệu|trieu|tr|m)(.*)$/, 1_000_000],
+    [/^(.*?)(?:nghìn|nghin|ngàn|ngan|ng|k)(.*)$/, 1_000],
+  ];
+  for (const [re, he] of NHAN) {
+    const m = s.match(re);
+    if (!m) continue;
+    const g = soTho(m[1]);
+    if (g === null) return null;
+    const duoi = m[2];
+    // "1tr2" = 1,2 triệu: phần sau hậu tố là PHẦN LẺ của bậc đó.
+    if (duoi) {
+      if (!/^\d+$/.test(duoi)) return null;
+      return Math.round(g * he + Number("0." + duoi) * he);
+    }
+    return Math.round(g * he);
+  }
+  const n = soTho(s);
+  return n === null ? null : Math.round(n);
+}
+
+/** "1.500.000" · "1,5" · "15" -> số. Trả null nếu còn ký tự lạ. */
+function soTho(s: string): number | null {
+  if (!s) return null;
+  let t = s.trim();
+  if (!/^[0-9.,]+$/.test(t)) return null;
+  const phay = t.lastIndexOf(","), cham = t.lastIndexOf(".");
+  const cuoi = Math.max(phay, cham);
+  if (cuoi >= 0) {
+    const sauCung = t.slice(cuoi + 1);
+    // 3 chữ số sau dấu = dấu NGHÌN kiểu Việt ("1.500.000"); khác đi là dấu THẬP PHÂN ("1,5").
+    if (sauCung.length === 3) t = t.replace(/[.,]/g, "");
+    else t = t.replace(/[.,]/g, (c, i) => (i === cuoi ? "." : ""));
+  }
+  const n = Number(t);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Settings, Scissors, Users, Link2, Check } from "lucide-react";
-import { hhmm, phutDep, type CaiDatLich, type DichVu, type Tho } from "@/lib/lich";
+import { hhmm, phutDep, docGia, type CaiDatLich, type DichVu, type Tho } from "@/lib/lich";
 import { tienDep } from "@/lib/chung";
 
 const MAU = ["#0EA5E9", "#F43F5E", "#10B981", "#A855F7", "#F59E0B", "#6366F1", "#EC4899", "#14B8A6"];
@@ -22,7 +22,9 @@ export default function CaiDatClient({ tho, dichVu, caiDat }: { tho: Tho[]; dich
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
       });
       const j = await r.json();
-      if (!r.ok) { setLoi(j?.loi || "Không lưu được"); return false; }
+      // Cũ chỉ xem mã HTTP. Máy chủ trả 200 kèm {ok:false} là trượt mà màn hình
+      // vẫn im như đã lưu — chủ tiệm tưởng xong, hôm sau mở ra không thấy đâu.
+      if (!r.ok || j?.ok === false || j?.loi) { setLoi(j?.loi || "Không lưu được"); return false; }
       router.refresh();
       return true;
     } catch { setLoi("Mất mạng, thử lại giúp em"); return false; }
@@ -119,15 +121,27 @@ function Khoi({ icon, tieuDe, mota, children }: any) {
 
 function ThemDichVu({ chay, them }: { chay: boolean; them: (b: any) => void }) {
   const [ten, setTen] = useState(""); const [phut, setPhut] = useState("60"); const [gia, setGia] = useState("");
+  // Ô giá nhận cách gõ của người Việt ("6tr", "6.000.000") như mọi ô tiền khác trong app.
+  // `null` = chưa đọc được -> KHOÁ nút, chứ không gửi NaN đi rồi im lặng trượt.
+  const soGia = gia.trim() === "" ? 0 : docGia(gia);
+  const giaHong = soGia === null;
   return (
-    <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
-      <input value={ten} onChange={(e) => setTen(e.target.value)} placeholder="Tên dịch vụ" className={`${INPUT} min-w-[9rem] flex-1`} />
-      <input value={phut} onChange={(e) => setPhut(e.target.value)} placeholder="phút" inputMode="numeric" className={`${INPUT} w-20`} />
-      <input value={gia} onChange={(e) => setGia(e.target.value)} placeholder="giá" inputMode="numeric" className={`${INPUT} w-28`} />
-      <button disabled={chay || !ten.trim()} onClick={() => { them({ ten, phut: Number(phut), gia: Number(gia || 0) }); setTen(""); setGia(""); }}
-        className="flex items-center gap-1 rounded-lg bg-[#0068FF] px-3 py-2 text-sm font-semibold text-white disabled:opacity-40">
-        <Plus className="h-4 w-4" /> Thêm
-      </button>
+    <div className="mt-3 border-t border-slate-100 pt-3">
+      <div className="flex flex-wrap gap-2">
+        <input value={ten} onChange={(e) => setTen(e.target.value)} placeholder="Tên dịch vụ" className={`${INPUT} min-w-[9rem] flex-1`} />
+        <input value={phut} onChange={(e) => setPhut(e.target.value)} placeholder="phút" inputMode="numeric" className={`${INPUT} w-20`} />
+        <input value={gia} onChange={(e) => setGia(e.target.value)} placeholder="giá (6tr)" className={`${INPUT} w-28 ${giaHong ? "border-rose-300" : ""}`} />
+        <button disabled={chay || !ten.trim() || giaHong}
+          onClick={() => { them({ ten, phut: Number(phut), gia: soGia }); setTen(""); setGia(""); }}
+          className="flex items-center gap-1 rounded-lg bg-[#0068FF] px-3 py-2 text-sm font-semibold text-white disabled:opacity-40">
+          <Plus className="h-4 w-4" /> Thêm
+        </button>
+      </div>
+      {gia.trim() !== "" && (
+        <p className={`mt-1 text-xs ${giaHong ? "text-rose-600" : "text-slate-400"}`}>
+          {giaHong ? "Chưa đọc được số tiền này" : `= ${tienDep(soGia as number)}`}
+        </p>
+      )}
     </div>
   );
 }

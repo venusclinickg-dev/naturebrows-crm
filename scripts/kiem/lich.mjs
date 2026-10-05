@@ -79,5 +79,19 @@ la("ngày đọc kiểu Việt 02/10/2026", tin.includes("02/10/2026"), true);
 la("có giờ", tin.includes("09:30"), true);
 la("có tên tiệm", tin.includes("Tiệm A"), true);
 
+// Ô "giá dịch vụ" trước đây dùng Number(): gõ "6tr" ra NaN, bấm Thêm thì dịch vụ
+// không vào đâu cả mà màn hình vẫn im. Giá sai âm thầm là khách bị tính nhầm tiền.
+console.log("\n-- đọc giá dịch vụ gõ tay --");
+la("6tr", L.docGia("6tr"), 6_000_000);
+la("6 triệu", L.docGia("6 triệu"), 6_000_000);
+la("1tr2 = 1,2 triệu", L.docGia("1tr2"), 1_200_000);
+la("500k", L.docGia("500k"), 500_000);
+la("6.000.000 (dấu nghìn kiểu Việt)", L.docGia("6.000.000"), 6_000_000);
+la("số trần 350 = 350 đồng, KHÔNG đoán thành 350k", L.docGia("350"), 350);
+la("0 là giá hợp lệ (dịch vụ tặng kèm)", L.docGia("0"), 0);
+la("rỗng -> null, KHÔNG phải 0", L.docGia(""), null);
+la("chữ bậy -> null", L.docGia("sáu triệu"), null);
+la("âm -> null", L.docGia(-5), null);
+
 console.log(`\n=> đạt ${dat} · trượt ${truot}`);
 process.exit(truot ? 1 : 0);
