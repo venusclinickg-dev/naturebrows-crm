@@ -4,6 +4,24 @@
 
 Nền của bản này là CRM Zalo do [HOPE Corp](https://ikihealing.com) dựng và chạy thật cho đội sale chăm hơn 8.000 hội thoại Zalo.
 
+## Hệ thống đang chạy ở đâu
+
+| Thứ | Ở đâu |
+|---|---|
+| Web (bản thật) | https://naturebrows-crm.vercel.app |
+| Trang khách tự đặt lịch | https://naturebrows-crm.vercel.app/dat-lich |
+| Mã nguồn | https://github.com/venusclinickg-dev/naturebrows-crm |
+| Kho dữ liệu | Supabase · dự án `naturebrows-crm` (vùng Sydney) |
+| Máy chủ web | Vercel · team Nature Brows, nhánh `main` tự lên bản mới mỗi lần đẩy mã |
+
+Ba biến môi trường (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+`NEXT_PUBLIC_APP_URL`) khai tay trên Vercel. Riêng `SUPABASE_SERVICE_ROLE_KEY` do
+**tích hợp Supabase ↔ Vercel** tự bơm sang — không ai phải chép tay khoá bí mật,
+và đổi khoá bên Supabase thì Vercel tự nhận bản mới.
+
+Chạy dưới máy thì `.env.local` phải có đủ 4 giá trị, trong đó `SUPABASE_SERVICE_ROLE_KEY`
+lấy ở Supabase → Settings → API Keys → Legacy. Cầu nối Zalo cũng cần khoá này.
+
 ## Đang có gì / còn thiếu gì
 
 | Mảng | Trạng thái |

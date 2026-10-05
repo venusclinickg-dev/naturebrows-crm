@@ -63,8 +63,9 @@ export default function LoginPage() {
           {dangVao && <Loader2 className="h-4 w-4 animate-spin" />} Đăng nhập
         </button>
 
+        {/* Nhân viên tiệm đọc dòng này, không phải lập trình viên — đừng chỉ họ sang tên file script. */}
         <p className="mt-4 text-center text-[11px] text-slate-400">
-          Tài khoản do quản trị viên tạo — xem <code className="rounded bg-slate-100 px-1">scripts/tao-nguoi-dung.mjs</code>
+          Chưa có tài khoản? Liên hệ quản lý Nature Brows để được cấp.
         </p>
       </form>
     </main>

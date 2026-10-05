@@ -79,7 +79,7 @@ export async function POST(req: Request) {
       { key: "lich_gio_mo", value: String(b.gioMo) },
       { key: "lich_gio_dong", value: String(b.gioDong) },
       { key: "lich_buoc", value: String(Math.round(buoc)) },
-      { key: "lich_ten_tiem", value: String(b.tenTiem || "").trim() || "Tiệm của bạn" },
+      { key: "lich_ten_tiem", value: String(b.tenTiem || "").trim() || "Nature Brows" },
       { key: "lich_cho_dat_web", value: b.choDatWeb ? "1" : "0" },
       { key: "lich_toi_da_ngay", value: String(Math.max(1, Math.min(365, Number(b.toiDaNgay) || 30))) },
     ];
