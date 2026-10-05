@@ -28,7 +28,7 @@ import { timTuCam } from "@/lib/tu-cam";
  */
 
 export type Kenh = "zalo" | "facebook";
-export type YDinh = "chao" | "gia" | "gio" | "dat-lich" | "lich-cua-toi" | "cam-on" | "khong-hieu" | "nguoi-that";
+export type YDinh = "chao" | "gia" | "gio" | "dia-chi" | "dat-lich" | "lich-cua-toi" | "cam-on" | "khong-hieu" | "nguoi-that";
 
 export type TraLoi = {
   tra: string | null;          // null = bot không nói gì
@@ -67,7 +67,10 @@ export function khongDau(s: string): string {
 const TU = {
   chao:   ["chao", "hello", "hi", "alo", "shop oi", "ad oi", "em oi", "co ai", "co ai khong"],
   gia:    ["gia", "bao nhieu", "bn tien", "bao nhiu", "nhieu tien", "bang gia", "chi phi", "bao tien", "may gia"],
-  gio:    ["may gio", "gio nao", "mo cua", "dong cua", "dia chi", "o dau", "cho nao", "duong nao", "chi duong"],
+  gio:    ["may gio", "gio nao", "mo cua", "dong cua", "lam den may gio", "nghi ngay nao"],
+  // TÁCH khỏi `gio`: hỏi Ở ĐÂU mà đáp giờ mở cửa là trả lời lạc câu. Khách hỏi đường
+  // thì cần ĐƯỜNG; đưa giờ mở cửa xong khách vẫn không biết đi đâu, lại phải hỏi lại.
+  diaChi: ["dia chi", "o dau", "cho nao", "duong nao", "chi duong", "toi tiem", "den tiem", "ban do", "map"],
   datLich: ["dat lich", "dat cho", "booking", "hen", "dang ky lich", "lich trong", "con cho", "con slot", "muon lam"],
   lichToi: ["lich cua toi", "lich cua minh", "toi dat luc", "minh dat luc", "em dat luc", "kiem tra lich", "xem lich"],
   camOn:  ["cam on", "thanks", "thank you", "oke", "dc roi", "duoc roi"],
@@ -122,6 +125,7 @@ export function doanYDinh(tin: string, tuKhoaNguoi: string[]): YDinh {
   if (co(t, TU.lichToi)) return "lich-cua-toi";
   if (co(t, TU.datLich)) return "dat-lich";
   if (co(t, TU.gia)) return "gia";
+  if (co(t, TU.diaChi)) return "dia-chi";
   if (co(t, TU.gio)) return "gio";
   if (co(t, TU.camOn)) return "cam-on";
   if (co(t, TU.chao) || t.length <= 12) return "chao";
@@ -194,6 +198,15 @@ export async function traLoi(h: CauHoi): Promise<TraLoi> {
     tra = `${xung} ${caiDat.tenTiem} mở cửa ${hhmm(caiDat.gioMo)} – ${hhmm(caiDat.gioDong)} hằng ngày ạ.`;
     if (ch.diaChi) tra += `\nĐịa chỉ: ${ch.diaChi}`;
     tra += `\n\nĐặt lịch trước cho khỏi phải chờ ạ: ${linkDatLich()}`;
+  }
+
+  else if (yDinh === "dia-chi") {
+    // CHƯA khai địa chỉ thì IM. Đáp giờ mở cửa cho câu hỏi đường là bịa một câu
+    // trả lời không ai hỏi, còn khách thì vẫn không biết đi đâu.
+    if (!ch.diaChi) return im("tiệm chưa khai địa chỉ nên bot không có đường để chỉ");
+    tra = `${xung} ${caiDat.tenTiem} ở ${ch.diaChi} ạ.`
+      + `\nTiệm mở cửa ${hhmm(caiDat.gioMo)} – ${hhmm(caiDat.gioDong)} hằng ngày ạ.`
+      + `\n\nĐặt lịch trước cho khỏi phải chờ ạ: ${linkDatLich()}`;
   }
 
   else if (yDinh === "dat-lich") {

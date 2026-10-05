@@ -62,7 +62,12 @@ console.log("\n-- nhận ra khách hỏi gì --");
 la("hỏi giá", y("bảng giá bao nhiêu ạ"), "gia");
 la("hỏi giá không dấu", y("gia bao nhieu v shop"), "gia");
 la("hỏi giờ", y("mấy giờ mở cửa"), "gio");
-la("hỏi đường", y("tiệm ở đâu vậy"), "gio");
+// Hỏi ĐƯỜNG phải ra "dia-chi", KHÔNG gộp vào "gio": trước đây gộp chung nên khách
+// hỏi "tiệm ở đâu" bị đáp giờ mở cửa — trả lời lạc câu, khách vẫn không biết đi đâu.
+la("hỏi đường -> địa chỉ, không phải giờ", y("tiệm ở đâu vậy"), "dia-chi");
+la("hỏi địa chỉ", y("cho em xin địa chỉ với"), "dia-chi");
+la("hỏi chỉ đường", y("chỉ đường giúp em đến tiệm"), "dia-chi");
+la("vẫn phân biệt được ĐAU (cầu cứu) với ĐÂU (hỏi đường)", y("làm xong em bị đau quá"), "nguoi-that");
 la("đặt lịch", y("chị muốn đặt lịch mai"), "dat-lich");
 la("xem lịch của mình", y("kiểm tra lịch của tôi"), "lich-cua-toi");
 la("chào", y("alo shop ơi"), "chao");
