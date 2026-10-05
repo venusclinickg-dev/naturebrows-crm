@@ -8,7 +8,7 @@ import { doTre } from "@/lib/hop-thu-zalo";
 import { MessageSquare, UsersRound, Clock, WifiOff, AlertTriangle, ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Tổng quan | Zalo CRM" };
+export const metadata = { title: "Tổng quan | Nature Brows CRM" };
 
 export default async function TongQuanZaloPage() {
   const user = await getCurrentUser();

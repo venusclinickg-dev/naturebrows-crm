@@ -34,7 +34,7 @@ export default function LoginPage() {
             <MessageSquare className="h-5 w-5" />
           </span>
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Zalo CRM</h1>
+            <h1 className="text-lg font-bold text-slate-900">Nature Brows CRM</h1>
             <p className="text-xs text-slate-500">Đăng nhập để vào hộp thư</p>
           </div>
         </div>

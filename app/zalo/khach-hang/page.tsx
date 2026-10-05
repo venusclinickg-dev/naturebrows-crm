@@ -8,7 +8,7 @@ import { NHAN_THE, chuDau, doTre, type TheKhach } from "@/lib/hop-thu-zalo";
 import { MessageSquare, Search, UserCheck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Khách hàng | Zalo CRM" };
+export const metadata = { title: "Khách hàng | Nature Brows CRM" };
 
 const boDau = (s: string) =>
   String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[đĐ]/g, "d").toLowerCase();

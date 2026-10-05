@@ -8,7 +8,7 @@ import { doTre, gioTu } from "@/lib/hop-thu-zalo";
 import { MessageSquare, UsersRound } from "lucide-react";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Nhóm Zalo | Zalo CRM" };
+export const metadata = { title: "Nhóm Zalo | Nature Brows CRM" };
 
 export default async function NhomZaloPage() {
   const user = await getCurrentUser();

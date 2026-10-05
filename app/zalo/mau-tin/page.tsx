@@ -5,7 +5,7 @@ import { ZaloThanhTren } from "../ZaloMobile";
 import MauTinClient from "./MauTinClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Mẫu tin nhanh | Zalo CRM" };
+export const metadata = { title: "Mẫu tin nhanh | Nature Brows CRM" };
 
 export default async function MauTinPage() {
   const user = await getCurrentUser();

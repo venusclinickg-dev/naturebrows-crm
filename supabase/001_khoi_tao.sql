@@ -1,5 +1,5 @@
 -- ============================================================================
--- ZALO CRM — KHỞI TẠO CƠ SỞ DỮ LIỆU (chạy MỘT LẦN trong Supabase SQL Editor)
+-- NATURE BROWS CRM — KHỞI TẠO CƠ SỞ DỮ LIỆU (chạy MỘT LẦN trong Supabase SQL Editor)
 --
 -- Cách chạy: Supabase Dashboard → SQL Editor → dán toàn bộ file này → Run.
 -- Chạy lại nhiều lần không sao (mọi lệnh đều IF NOT EXISTS).

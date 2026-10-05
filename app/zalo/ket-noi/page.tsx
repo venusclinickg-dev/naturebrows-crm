@@ -6,7 +6,7 @@ import { ZaloThanhTren } from "../ZaloMobile";
 import KetNoiClient from "./KetNoiClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Kết nối Zalo | Zalo CRM" };
+export const metadata = { title: "Kết nối Zalo | Nature Brows CRM" };
 
 export default async function KetNoiPage() {
   const user = await getCurrentUser();

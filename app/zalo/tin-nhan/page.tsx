@@ -5,7 +5,7 @@ import { layDanhSachKhach, layDoanChat, layHoSoKhach, layHoatDong, layNick, layT
 import HopThuClient from "./HopThuClient";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Tin nhắn | Zalo CRM" };
+export const metadata = { title: "Tin nhắn | Nature Brows CRM" };
 
 /** HỘP THƯ ZALO — ba cột: danh sách hội thoại · đoạn chat · hồ sơ khách. */
 const khoaNhom = (ten: string) =>

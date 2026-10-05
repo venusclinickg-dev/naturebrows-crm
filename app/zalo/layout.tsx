@@ -8,7 +8,7 @@ import TabDuoi from "@/components/TabDuoi";
 export const dynamic = "force-dynamic";
 
 /**
- * KHU ZALO CRM — app toàn màn hình: sidebar trái · thanh tìm trên · vùng nội dung.
+ * KHU ZALO — app toàn màn hình: sidebar trái · thanh tìm trên · vùng nội dung.
  * Mobile: thanh xanh (từng trang tự đặt) + tab dưới.
  *
  * Gác quyền Ở ĐÂY một lần cho cả khu (chưa đăng nhập thì middleware đã đá về /login,

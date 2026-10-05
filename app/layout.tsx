@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Zalo CRM",
+  title: "Nature Brows CRM",
   description: "CRM mã nguồn mở cho đội bán hàng chăm khách qua Zalo cá nhân",
 };
 
