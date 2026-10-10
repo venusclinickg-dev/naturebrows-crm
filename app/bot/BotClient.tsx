@@ -19,8 +19,10 @@ const CAU_THU = [
 export default function BotClient({ cauHinh, soDichVu }: { cauHinh: CauHinhBot; soDichVu: number }) {
   const router = useRouter();
   const [c, setC] = useState({
-    bat: cauHinh.bat, nguoiSau: String(cauHinh.nguoiSau), nghiPhut: String(cauHinh.nghiPhut),
+    batFb: cauHinh.batFb, batZalo: cauHinh.batZalo,
+    nguoiSau: String(cauHinh.nguoiSau), nghiPhut: String(cauHinh.nghiPhut),
     diaChi: cauHinh.diaChi, loiChao: cauHinh.loiChao, tuKhoaNguoi: cauHinh.tuKhoaNguoi.join(", "),
+    suKien: cauHinh.suKien,
   });
   const [thu, setThu] = useState("bảng giá bao nhiêu ạ");
   const [kq, setKq] = useState<any>(null);
@@ -91,10 +93,24 @@ export default function BotClient({ cauHinh, soDichVu }: { cauHinh: CauHinhBot; 
       <section className="rounded-xl border border-slate-200 bg-white p-4">
         <h2 className="text-sm font-semibold text-slate-900">Cài đặt</h2>
         <div className="mt-3 space-y-3">
-          <label className="flex items-center gap-2 text-sm text-slate-700">
-            <input type="checkbox" checked={c.bat} onChange={(e) => setC({ ...c, bat: e.target.checked })} className="h-4 w-4" />
-            <span><b>Bật bot</b> — trả lời tự động trên Facebook và Zalo</span>
-          </label>
+          {/* HAI công tắc riêng. Zalo nối nick thật với khách thật nên bật nhầm là
+              bot nhắn thẳng cho khách — không gộp chung với Facebook đang thử. */}
+          <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Bật bot theo từng kênh</p>
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input type="checkbox" checked={c.batFb} onChange={(e) => setC({ ...c, batFb: e.target.checked })} className="h-4 w-4" />
+              <span><b>Facebook</b> — tin nhắn vào Trang</span>
+            </label>
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input type="checkbox" checked={c.batZalo} onChange={(e) => setC({ ...c, batZalo: e.target.checked })} className="h-4 w-4" />
+              <span><b>Zalo</b> — chat 1-1 trên nick đang nối</span>
+            </label>
+            {c.batZalo && (
+              <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                Zalo đang nối nick thật. Bật là bot nhắn cho KHÁCH THẬT ngay lượt tới.
+              </p>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <L nhan="Nhường người sau mấy lượt bot nói">
               <input value={c.nguoiSau} onChange={(e) => setC({ ...c, nguoiSau: e.target.value })} inputMode="numeric" className={INPUT} />
@@ -105,6 +121,9 @@ export default function BotClient({ cauHinh, soDichVu }: { cauHinh: CauHinhBot; 
           </div>
           <L nhan="Địa chỉ tiệm (bot đọc khi khách hỏi đường)">
             <input value={c.diaChi} onChange={(e) => setC({ ...c, diaChi: e.target.value })} className={INPUT} />
+          </L>
+          <L nhan="Thông tin sự kiện / workshop (bot đọc khi khách hỏi; để trống thì bot im và gọi người thật)">
+            <textarea value={c.suKien} onChange={(e) => setC({ ...c, suKien: e.target.value })} rows={7} className={INPUT} />
           </L>
           <L nhan="Câu chào (để trống thì bot dùng câu mặc định)">
             <textarea value={c.loiChao} onChange={(e) => setC({ ...c, loiChao: e.target.value })} rows={2} className={INPUT} />

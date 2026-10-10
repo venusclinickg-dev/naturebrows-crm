@@ -23,7 +23,7 @@ const MENU = [
   { href: "/dao-tao", label: "Đào tạo", icon: GraduationCap },
   { href: "/zalo/khach-hang", label: "Khách hàng", icon: Users },
   { href: "/zalo/tin-nhan", label: "Tin nhắn Zalo", icon: MessageSquare, badgeKey: "tinNhan" as const },
-  { href: "/facebook", label: "Tin nhắn Facebook", icon: Facebook, chinhXac: true },
+  { href: "/facebook", label: "Tin nhắn Facebook", icon: Facebook, chinhXac: true, badgeKey: "fb" as const },
   { href: "/zalo/nhom", label: "Nhóm cộng đồng", icon: UsersRound },
   { href: "/zalo/mau-tin", label: "Mẫu tin nhanh", icon: FileText },
   { href: "/bot", label: "Bot trả lời", icon: Bot },
@@ -33,11 +33,11 @@ const MENU = [
 ];
 
 export default function Nav({
-  ten, vaiTro, online, badge = { tinNhan: 0, viec: 0 }, nick = [],
+  ten, vaiTro, online, badge = { tinNhan: 0, viec: 0, fb: 0 }, nick = [],
 }: {
   ten: string; vaiTro?: string | null; online: boolean;
   /** Số đỏ trên menu. Mảng nào không có số thì bỏ trống — vỏ không ép mảng phải đếm hộ Zalo. */
-  badge?: { tinNhan: number; viec: number };
+  badge?: { tinNhan: number; viec: number; fb: number };
   /** Zalo đang nối vào CRM — hiện ở đáy, kèm chấm xanh/đỏ theo trạng thái nick. */
   nick?: Array<{ ownId: string; sale: string | null; tenZalo: string | null; song: boolean | null }>;
 }) {

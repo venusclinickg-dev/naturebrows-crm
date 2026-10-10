@@ -68,6 +68,15 @@ la("hỏi đường -> địa chỉ, không phải giờ", y("tiệm ở đâu v
 la("hỏi địa chỉ", y("cho em xin địa chỉ với"), "dia-chi");
 la("hỏi chỉ đường", y("chỉ đường giúp em đến tiệm"), "dia-chi");
 la("vẫn phân biệt được ĐAU (cầu cứu) với ĐÂU (hỏi đường)", y("làm xong em bị đau quá"), "nguoi-that");
+
+// Sự kiện phải thắng bảng giá và đặt lịch: "giá vé workshop" mà rơi vào nhánh bảng giá
+// thì bot đọc giá DỊCH VỤ cho người hỏi giá VÉ — trả lời sai hẳn câu hỏi.
+la("hỏi sự kiện", y("workshop mùa 3 khi nào vậy"), "su-kien");
+la("hỏi giá vé -> sự kiện, KHÔNG phải bảng giá dịch vụ", y("giá vé bao nhiêu ạ"), "su-kien");
+la("hỏi đăng ký tham dự -> sự kiện, KHÔNG phải đặt lịch", y("em muốn đăng ký tham dự"), "su-kien");
+la("hỏi hạng vé VIP", y("vé VIP gồm những gì"), "su-kien");
+la("đặt lịch thường vẫn là đặt lịch", y("chị muốn đặt lịch phun mày"), "dat-lich");
+la("hỏi bảng giá dịch vụ vẫn là bảng giá", y("bảng giá phun mày bao nhiêu"), "gia");
 la("đặt lịch", y("chị muốn đặt lịch mai"), "dat-lich");
 la("xem lịch của mình", y("kiểm tra lịch của tôi"), "lich-cua-toi");
 la("chào", y("alo shop ơi"), "chao");

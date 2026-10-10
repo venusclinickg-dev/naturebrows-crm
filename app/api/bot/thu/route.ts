@@ -18,7 +18,12 @@ export async function POST(req: Request) {
   if (b.luu) {
     if (!laQuanLy(user.vai_tro)) return NextResponse.json({ loi: "Chỉ quản lý sửa được cài đặt bot" }, { status: 403 });
     const rows = [
-      { key: "bot_bat", value: b.bat ? "1" : "0" },
+      { key: "bot_bat_fb", value: b.batFb ? "1" : "0" },
+      { key: "bot_bat_zalo", value: b.batZalo ? "1" : "0" },
+      // Giữ khoá cũ đồng bộ: bật ở BẤT KỲ kênh nào thì khoá chung cũng bật, để bản
+      // mã cũ (nếu còn chạy đâu đó) không hiểu nhầm là bot đang tắt hoàn toàn.
+      { key: "bot_bat", value: (b.batFb || b.batZalo) ? "1" : "0" },
+      { key: "bot_su_kien", value: String(b.suKien || "").slice(0, 2000) },
       { key: "bot_nguoi_sau", value: String(Math.max(1, Math.min(10, Number(b.nguoiSau) || 2))) },
       { key: "bot_nghi_phut", value: String(Math.max(0, Math.min(120, Number(b.nghiPhut) || 1))) },
       { key: "bot_dia_chi", value: String(b.diaChi || "").slice(0, 300) },

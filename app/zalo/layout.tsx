@@ -3,6 +3,7 @@ import { getCurrentUser, getServiceClient } from "@/lib/supabase-server";
 import { laQuanLy } from "@/lib/auth";
 import { nickChoPhep, layTrangThaiKho, layNick } from "@/lib/hop-thu-zalo-server";
 import Nav, { ThanhTop } from "@/components/Nav";
+import { demSoDo } from "@/lib/badge-server";
 import TabDuoi from "@/components/TabDuoi";
 
 export const dynamic = "force-dynamic";
@@ -22,20 +23,13 @@ export default async function ZaloLayout({ children }: { children: React.ReactNo
   // Đếm `count` head-only, KHÔNG tải cả tệp — layout bọc mọi trang trong khu.
   const duocXem = await nickChoPhep(user);
   const sb = getServiceClient();
-  const moc7Ngay = new Date(Date.now() - 7 * 864e5).toISOString();
-  let qCho = sb.from("zalo_bridge_contacts").select("zalo_uid", { count: "exact", head: true })
-    .eq("unreplied", true).gte("last_in_at", moc7Ngay);
-  if (duocXem && duocXem.length) qCho = qCho.in("own_id", duocXem);
-  const [cho, viec, kho, nickHet] = await Promise.all([
-    duocXem && !duocXem.length ? Promise.resolve({ count: 0 } as any) : qCho,
-    sb.from("cong_viec").select("id", { count: "exact", head: true })
-      .eq("assignee_id", user.id).in("status", ["todo", "doing"]),
+  const [badge, kho, nickHet] = await Promise.all([
+    demSoDo(user.id, duocXem),
     layTrangThaiKho(),
     layNick(),
   ]);
   // Đáy sidebar hiện "đang nối những Zalo nào" — chỉ nick người này được xem.
   const nickHien = nickHet.filter((n) => !duocXem || duocXem.includes(n.ownId));
-  const badge = { tinNhan: cho?.count || 0, viec: viec?.count || 0 };
   const online = !!kho.ok && (kho.gioTre ?? 99) < 8;
 
   return (

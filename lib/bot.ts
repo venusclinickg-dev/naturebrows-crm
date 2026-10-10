@@ -28,7 +28,7 @@ import { timTuCam } from "@/lib/tu-cam";
  */
 
 export type Kenh = "zalo" | "facebook";
-export type YDinh = "chao" | "gia" | "gio" | "dia-chi" | "dat-lich" | "lich-cua-toi" | "cam-on" | "khong-hieu" | "nguoi-that";
+export type YDinh = "chao" | "gia" | "gio" | "dia-chi" | "su-kien" | "dat-lich" | "lich-cua-toi" | "cam-on" | "khong-hieu" | "nguoi-that";
 
 export type TraLoi = {
   tra: string | null;          // null = bot không nói gì
@@ -53,8 +53,14 @@ export type CauHoi = {
 };
 
 export type CauHinhBot = {
-  bat: boolean; nguoiSau: number; nghiPhut: number;
+  // MỖI KÊNH MỘT CÔNG TẮC. Facebook còn chờ Meta duyệt nên chỉ quản trị viên nhắn
+  // được — bật để thử thoải mái. Zalo đã nối nick thật với hàng trăm khách thật,
+  // bật là bot nhắn thẳng cho khách. Hai mức rủi ro khác nhau thì không chung nút.
+  batFb: boolean; batZalo: boolean;
+  nguoiSau: number; nghiPhut: number;
   diaChi: string; loiChao: string; tuKhoaNguoi: string[];
+  /** Thông tin sự kiện/workshop, chủ tiệm tự gõ. Trống = bot im, KHÔNG bịa. */
+  suKien: string;
 };
 
 /** Bỏ dấu + hạ chữ thường để dò từ khoá. `đ` phải đổi TRƯỚC khi tách dấu — NFD không tách được nó. */
@@ -71,6 +77,11 @@ const TU = {
   // TÁCH khỏi `gio`: hỏi Ở ĐÂU mà đáp giờ mở cửa là trả lời lạc câu. Khách hỏi đường
   // thì cần ĐƯỜNG; đưa giờ mở cửa xong khách vẫn không biết đi đâu, lại phải hỏi lại.
   diaChi: ["dia chi", "o dau", "cho nao", "duong nao", "chi duong", "toi tiem", "den tiem", "ban do", "map"],
+  // CHỈ nhận cụm NHIỀU TỪ. "ve", "dang ky" đứng một mình đụng quá nhiều câu thường
+  // ("ve nha", "dang ky lich") — dò nhầm thì khách hỏi đặt lịch lại bị đáp về sự kiện.
+  suKien: ["su kien", "workshop", "hoi thao", "mua 3", "mua ba", "signature",
+           "tham du", "dang ky tham du", "dang ky su kien", "ve vip", "ve basic",
+           "ve artist", "ve master", "hang ve", "gia ve", "luxury palace"],
   datLich: ["dat lich", "dat cho", "booking", "hen", "dang ky lich", "lich trong", "con cho", "con slot", "muon lam"],
   lichToi: ["lich cua toi", "lich cua minh", "toi dat luc", "minh dat luc", "em dat luc", "kiem tra lich", "xem lich"],
   camOn:  ["cam on", "thanks", "thank you", "oke", "dc roi", "duoc roi"],
@@ -123,6 +134,9 @@ export function doanYDinh(tin: string, tuKhoaNguoi: string[]): YDinh {
   // Người thật thắng MỌI thứ khác — kiểm trước tiên.
   if (dinhTuKhoaNguoi(goc, t, tuKhoaNguoi)) return "nguoi-that";
   if (co(t, TU.lichToi)) return "lich-cua-toi";
+  // Sự kiện đứng TRƯỚC đặt lịch và bảng giá: "giá vé workshop" mà rơi vào nhánh
+  // bảng giá thì bot đọc giá DỊCH VỤ cho khách hỏi giá VÉ — sai hẳn câu hỏi.
+  if (co(t, TU.suKien)) return "su-kien";
   if (co(t, TU.datLich)) return "dat-lich";
   if (co(t, TU.gia)) return "gia";
   if (co(t, TU.diaChi)) return "dia-chi";
@@ -134,11 +148,15 @@ export function doanYDinh(tin: string, tuKhoaNguoi: string[]): YDinh {
 
 export async function layCauHinh(): Promise<CauHinhBot> {
   const { data } = await getServiceClient().from("config").select("key,value")
-    .in("key", ["bot_bat", "bot_nguoi_sau", "bot_nghi_phut", "bot_dia_chi", "bot_loi_chao", "bot_tu_khoa_nguoi"]);
+    .in("key", ["bot_bat", "bot_bat_fb", "bot_bat_zalo", "bot_su_kien",
+                "bot_nguoi_sau", "bot_nghi_phut", "bot_dia_chi", "bot_loi_chao", "bot_tu_khoa_nguoi"]);
   const m = Object.fromEntries((data || []).map((r: any) => [r.key, r.value]));
   const so = (v: any, md: number) => { const n = Number(v); return Number.isFinite(n) && n >= 0 ? n : md; };
   return {
-    bat: m.bot_bat === "1",
+    // Chưa có khoá mới (kho cũ chưa chạy 008) thì lùi về khoá chung cũ.
+    batFb: (m.bot_bat_fb ?? m.bot_bat) === "1",
+    batZalo: (m.bot_bat_zalo ?? m.bot_bat) === "1",
+    suKien: (m.bot_su_kien || "").trim(),
     nguoiSau: so(m.bot_nguoi_sau, 2),
     nghiPhut: so(m.bot_nghi_phut, 1),
     diaChi: (m.bot_dia_chi || "").trim(),
@@ -158,7 +176,8 @@ export async function traLoi(h: CauHoi): Promise<TraLoi> {
   const im = (lyDo: string, yDinh: YDinh = "nguoi-that", chuyen = true): TraLoi =>
     ({ tra: null, chuyenNguoi: chuyen, yDinh, lyDo });
 
-  if (!ch.bat && !h.boQuaTat) return im("bot đang tắt trong cài đặt", "khong-hieu");
+  const batKenh = h.kenh === "zalo" ? ch.batZalo : ch.batFb;
+  if (!batKenh && !h.boQuaTat) return im(`bot đang tắt cho kênh ${h.kenh === "zalo" ? "Zalo" : "Facebook"}`, "khong-hieu");
   if (h.botTat) return im("nhân viên đã vào tay hội thoại này");
 
   // Chống đáp dồn: khách gõ liền 5 câu thì bot đáp 5 lần là phản tác dụng.
@@ -207,6 +226,13 @@ export async function traLoi(h: CauHoi): Promise<TraLoi> {
     tra = `${xung} ${caiDat.tenTiem} ở ${ch.diaChi} ạ.`
       + `\nTiệm mở cửa ${hhmm(caiDat.gioMo)} – ${hhmm(caiDat.gioDong)} hằng ngày ạ.`
       + `\n\nĐặt lịch trước cho khỏi phải chờ ạ: ${linkDatLich()}`;
+  }
+
+  else if (yDinh === "su-kien") {
+    // Chưa khai thì IM. Sự kiện có ngày giờ, địa điểm, giá vé — bịa một chữ ở đây
+    // là khách đi nhầm ngày hoặc trả nhầm tiền.
+    if (!ch.suKien) return im("tiệm chưa khai thông tin sự kiện nên bot không có gì để đọc");
+    tra = `${xung}\n${ch.suKien}`;
   }
 
   else if (yDinh === "dat-lich") {
