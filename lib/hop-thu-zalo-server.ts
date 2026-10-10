@@ -115,7 +115,7 @@ export async function layDanhSachKhach(
 
   const COT = "own_id, zalo_uid, display_name, phone, phone_norm, last_msg_at, last_in_at, last_out_at, unreplied, msg_count"
     + ", thread_type, unread_count, last_content, last_type"
-    + ", zalo_name, ngay_sinh, trang_thai, la_ban_be, nhan_sale";
+    + ", zalo_name, ngay_sinh, trang_thai, la_ban_be, nhan_sale, anh";
   const truyVan = (chiCho: boolean, gioiHan: number) => {
     let q = sb.from("zalo_bridge_contacts").select(COT)
       .order("last_msg_at", { ascending: false, nullsFirst: false })
@@ -159,6 +159,7 @@ export async function layDanhSachKhach(
       ownId: r.own_id,
       uid: r.zalo_uid,
       ten: r.display_name || r.phone || r.zalo_uid,
+      anh: r.anh || null,
       phone: r.phone || null,
       phoneNorm: r.phone_norm || null,
       sale: saleTheoNick[r.own_id] || null,

@@ -22,6 +22,7 @@ export type HopThuKhach = {
   ownId: string;
   uid: string;
   ten: string;
+  anh: string | null;        // đường dẫn ảnh đại diện trên CDN Zalo; null = hiện chữ cái đầu
   phone: string | null;
   phoneNorm: string | null;
   sale: string | null;
@@ -193,7 +194,11 @@ export function tienVN(n: number): string {
   return Math.round(n).toLocaleString("vi-VN");
 }
 
-/** Chữ cái đầu cho ô avatar (ảnh đại diện Zalo hết hạn nhanh nên không nhúng ảnh ngoài). */
+/**
+ * Chữ cái đầu cho ô avatar — dùng khi CHƯA có ảnh hoặc ảnh Zalo đã chết.
+ * (Link ảnh Zalo hết hạn được, nên màn hình luôn phải có đường lùi về chữ cái đầu;
+ *  cầu nối làm mới link mỗi 6 tiếng một lượt.)
+ */
 export function chuDau(ten?: string | null): string {
   const s = String(ten || "").trim();
   if (!s) return "?";

@@ -217,6 +217,8 @@ async function dongBoBanBe(api, ownId) {
     const r = { own_id: ownId, zalo_uid: uid, la_ban_be: true, updated_at: now };
     if (ten && !daCoTen.has(uid)) r.display_name = ten;
     if (b.zaloName) r.zalo_name = b.zaloName;
+    // Chỉ ĐƯỜNG DẪN ảnh, không tải ảnh về. Link chết thì màn hình tự lùi về chữ cái đầu.
+    if (b.avatar) r.anh = b.avatar;
     if (sdt) { r.phone = b.phoneNumber || sdt; r.phone_norm = chuanSdt(sdt); }
     return r;
   }).filter((r) => r.zalo_uid && r.zalo_uid !== "undefined");
@@ -366,6 +368,12 @@ async function dayHangDoiGui() {
   } finally { dangDaySong = false; }
 }
 setInterval(() => { dayHangDoiGui().catch(() => {}); }, 5000);
+
+// Làm mới danh bạ mỗi 6 tiếng: bắt bạn mới kết, VÀ xin lại link ảnh đại diện —
+// link ảnh của Zalo có hạn, để lâu là hộp thư lùi hết về chữ cái đầu.
+setInterval(() => {
+  dongBoBanBe(api, ownId).catch((e) => console.error("[cầu Zalo] làm mới danh bạ lỗi:", e?.message || e));
+}, 6 * 60 * 60 * 1000);
 
 // Nhịp tim mỗi 10 phút — kể cả khi không có tin nào, app vẫn thấy cầu sống.
 setInterval(() => {

@@ -375,11 +375,11 @@ export default function HopThuClient({
                     dangChon ? "bg-[#EAF2FF] hover:bg-[#EAF2FF]" : ""
                   }`}
                 >
-                  <span className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                    k.laNhom ? "bg-indigo-100 text-indigo-700" : "bg-[#DCEBFF] text-[#0068FF]"
-                  }`}>
-                    {k.laNhom ? <Users className="h-4 w-4" /> : chuDau(k.ten)}
-                  </span>
+                  <AnhKhach
+                    anh={k.anh} ten={k.ten} laNhom={k.laNhom}
+                    co="mt-0.5 h-9 w-9 text-xs"
+                    mau={k.laNhom ? "bg-indigo-100 text-indigo-700" : "bg-[#DCEBFF] text-[#0068FF]"}
+                  />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline justify-between gap-2">
                       <span className="truncate text-sm font-medium text-slate-900">{k.ten}</span>
@@ -438,9 +438,8 @@ export default function HopThuClient({
             <>
               <header className="flex items-center gap-3 border-b border-blue-100 bg-[#F3F8FF] p-3">
                 <button onClick={() => setChon(null)} className="text-sm text-slate-500 lg:hidden">Quay lại</button>
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0068FF] text-xs font-semibold text-white">
-                  {chuDau(chon.ten)}
-                </span>
+                <AnhKhach anh={chon.anh} ten={chon.ten} laNhom={chon.laNhom}
+                  co="h-9 w-9 text-xs" mau="bg-[#0068FF] text-white" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-slate-900">{chon.ten}</p>
                   <p className="truncate text-xs text-slate-500">
@@ -602,7 +601,8 @@ export default function HopThuClient({
           ) : (
             <div className="space-y-4 p-4">
               <div className="flex items-start gap-3">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#DCEBFF] text-sm font-bold text-[#0068FF]">{chuDau(chon.ten)}</span>
+                <AnhKhach anh={chon.anh} ten={chon.ten} laNhom={chon.laNhom}
+                  co="h-12 w-12 text-sm" mau="bg-[#DCEBFF] text-[#0068FF]" />
                 <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-slate-900">{hoSo?.ten || chon.ten}</p>
                 {chon.tenZalo && chon.tenZalo !== chon.ten && (
@@ -781,6 +781,36 @@ export default function HopThuClient({
 }
 
 /** Ô tạo việc. Hạn mặc định HÔM NAY — giao là làm ngay, đừng đẩy việc sang mai. */
+
+/**
+ * Ảnh đại diện khách, TỰ LÙI về chữ cái đầu khi không có ảnh hoặc ảnh chết.
+ *
+ * Cố ý dùng <img> thường chứ không phải next/image: ảnh nằm trên CDN của Zalo, tên miền
+ * họ đổi lúc nào không báo. next/image bắt khai báo trước tên miền — Zalo đổi là ảnh
+ * gãy TOÀN BỘ hộp thư. Ở đây ảnh chết thì chỉ một người về lại chữ cái đầu, vẫn đọc được.
+ *
+ * `referrerPolicy="no-referrer"` vì CDN Zalo chặn ảnh nhúng từ miền lạ nếu thấy referer.
+ */
+function AnhKhach({ anh, ten, laNhom, co, mau }: {
+  anh?: string | null; ten: string; laNhom?: boolean; co: string; mau: string;
+}) {
+  const [hong, setHong] = useState(false);
+  if (anh && !hong) {
+    return (
+      <img
+        src={anh} alt="" referrerPolicy="no-referrer" loading="lazy"
+        onError={() => setHong(true)}
+        className={`${co} shrink-0 rounded-full border border-slate-200 object-cover`}
+      />
+    );
+  }
+  return (
+    <span className={`${co} ${mau} flex shrink-0 items-center justify-center rounded-full font-semibold`}>
+      {laNhom ? <Users className="h-4 w-4" /> : chuDau(ten)}
+    </span>
+  );
+}
+
 function OTaoViec({
   ten, dong, gui,
 }: {
