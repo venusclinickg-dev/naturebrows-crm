@@ -25,7 +25,7 @@ import { homedir } from "os";
 import { execFileSync } from "child_process";
 import ws from "ws";
 globalThis.WebSocket = ws; // supabase-js cần WebSocket; Node 20 chưa có sẵn bản global
-import { sdtTrongTen, chuanSdt } from "./lib/zalo-chuan.mjs";
+import { sdtTrongTen, chuanSdt, sdtTrongTin, emailTrongTin } from "./lib/zalo-chuan.mjs";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const env = Object.fromEntries(
@@ -259,8 +259,17 @@ async function luuTin(ownId, msg) {
   const uidDong = laNhom ? String(msg.threadId) : uidKhach;
   if (!uidDong) return;
   const { data: cu } = await sb.from("zalo_bridge_contacts")
-    .select("id,msg_count,display_name").eq("own_id", ownId).eq("zalo_uid", uidDong).maybeSingle();
+    .select("id,msg_count,display_name,phone,email").eq("own_id", ownId).eq("zalo_uid", uidDong).maybeSingle();
   const chu = chuCuaTin(d);
+
+  // Khách TỰ GÕ số/email trong chat là nguồn thật duy nhất còn lại (Zalo không trả
+  // phoneNumber của bạn bè). CHỈ điền khi kho CHƯA có — số khách đã xác nhận quý hơn
+  // số bóc máy móc, và đè lên là mất luôn bản đúng mà không ai biết.
+  // Không bóc từ tin MÌNH gửi: trong đó thường là số của TIỆM, gắn vào hồ sơ khách là sai người.
+  const sdtMoi = (!raNgoai && !cu?.phone) ? sdtTrongTin(chu) : null;
+  const emailMoi = (!raNgoai && !cu?.email) ? emailTrongTin(chu) : null;
+  if (sdtMoi) console.log(`[cầu Zalo] bóc được SĐT trong tin của ${uidDong}`);
+  if (emailMoi) console.log(`[cầu Zalo] bóc được email trong tin của ${uidDong}`);
   await sb.from("zalo_bridge_contacts").upsert({
     own_id: ownId,
     zalo_uid: uidDong,
@@ -274,6 +283,8 @@ async function luuTin(ownId, msg) {
       : raNgoai
         ? { last_out_at: khiNao, unreplied: false }
         : { last_in_at: khiNao, unreplied: true, unread_count: 1 }),
+    ...(sdtMoi ? { phone: sdtMoi, phone_norm: chuanSdt(sdtMoi) } : {}),
+    ...(emailMoi ? { email: emailMoi } : {}),
     msg_count: (cu?.msg_count || 0) + 1,
     updated_at: new Date().toISOString(),
   }, { onConflict: "own_id,zalo_uid" });
@@ -327,10 +338,33 @@ api.listener.on("undo", async (u) => {
   } catch (e) { console.error("[cầu Zalo] lỗi ghi thu hồi:", e?.message || e); }
 });
 api.listener.on("error", (e) => console.error("[cầu Zalo] lỗi listener:", e?.message || e));
+
+/**
+ * CHẾT THÌ PHẢI CHẾT HẲN.
+ *
+ * Lỗi thật đã gặp trên nick của tiệm: máy mất mạng (ENOTFOUND wpa.chat.zalo.me) →
+ * websocket đóng mã 1006 → `retryOnClose` của thư viện không dựng lại được. Tiến trình
+ * VẪN SỐNG, vẫn làm mới danh bạ mỗi 6 tiếng, vẫn đập nhịp tim — nên màn hình báo "cầu
+ * nối đang chạy" suốt BA NGÀY trong khi không một tin nhắn nào về. Đó là kiểu hỏng tệ
+ * nhất: im lặng và trông như đang khoẻ.
+ *
+ * Nay mất kết nối mà 60 giây không nối lại được thì THOÁT hẳn, để trình quản lý
+ * (launchd → zalo-cau-noi-quan-ly.mjs) bật lại từ đầu bằng phiên đã lưu.
+ */
+let dangNoi = false;
+let henKiemNoiLai = null;
+api.listener.on("connected", () => { dangNoi = true; if (henKiemNoiLai) { clearTimeout(henKiemNoiLai); henKiemNoiLai = null; } });
 api.listener.on("closed", async (code, reason) => {
   // 3000 DuplicateConnection / 3003 KickConnection = nick đang đăng nhập chỗ khác đá mình ra.
+  dangNoi = false;
   await ghiTrangThai({ ok: false, ownId, ten, error: `mất kết nối (${code}) ${reason || ""}` });
-  console.error(`[cầu Zalo] Mất kết nối: ${code} ${reason || ""}`);
+  console.error(`[cầu Zalo] Mất kết nối: ${code} ${reason || ""} — chờ 60 giây xem có tự nối lại không`);
+  if (henKiemNoiLai) clearTimeout(henKiemNoiLai);
+  henKiemNoiLai = setTimeout(() => {
+    if (dangNoi) return;
+    console.error("[cầu Zalo] 60 giây vẫn chưa nối lại — THOÁT để trình quản lý bật lại từ đầu.");
+    process.exit(1);
+  }, 60_000);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

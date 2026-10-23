@@ -40,7 +40,7 @@ export default async function KhachZaloPage({
   const MOI_TRANG = 100;
 
   const ds = tatCa.filter((k) => {
-    if (q && !boDau(`${k.ten} ${k.tenZalo || ""} ${k.phone || ""} ${k.trangThai || ""}`).includes(q)) return false;
+    if (q && !boDau(`${k.ten} ${k.tenZalo || ""} ${k.phone || ""} ${k.email || ""} ${k.trangThai || ""}`).includes(q)) return false;
     if (nhanChon && !k.nhanSale.includes(nhanChon)) return false;
     if (loc === "co-so" && !k.phoneNorm) return false;
     if (loc === "da-mua" && !k.the.some((t) => t !== "chua-mua")) return false;
@@ -132,6 +132,7 @@ export default async function KhachZaloPage({
               <tr className="border-b border-slate-100 text-left text-xs text-slate-500">
                 <th className="px-4 py-2.5 font-medium">Khách</th>
                 <th className="px-4 py-2.5 font-medium">Số điện thoại</th>
+                <th className="px-4 py-2.5 font-medium">Email</th>
                 <th className="px-4 py-2.5 font-medium">Ngày sinh</th>
                 <th className="px-4 py-2.5 font-medium">Thẻ (máy)</th>
                 <th className="px-4 py-2.5 font-medium">Nhãn (người)</th>
@@ -158,6 +159,7 @@ export default async function KhachZaloPage({
                     </span>
                   </td>
                   <td className="px-4 py-2.5 text-slate-600">{k.phone || <span className="text-slate-300">—</span>}</td>
+                  <td className="px-4 py-2.5 text-slate-600">{k.email || <span className="text-slate-300">—</span>}</td>
                   <td className="px-4 py-2.5 text-xs text-slate-500">{k.ngaySinh || <span className="text-slate-300">—</span>}</td>
                   <td className="px-4 py-2.5">
                     <span className="flex flex-wrap gap-1">

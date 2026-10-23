@@ -24,6 +24,8 @@ export type HopThuKhach = {
   ten: string;
   anh: string | null;        // đường dẫn ảnh đại diện trên CDN Zalo; null = hiện chữ cái đầu
   phone: string | null;
+  email: string | null;      // bóc từ tin khách gõ, hoặc lễ tân gắn tay; cho email marketing
+
   phoneNorm: string | null;
   sale: string | null;
   tinCuoiAt: string | null;
